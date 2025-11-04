@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Omiljen film">
+     <meta name="autor" content="Lara Jozipović, studentica 3. godine Učiteljskog studija">
+    <title>Zadaća 2</title>
+</head>
+<body>
+    <h1>Harry Potter</h1>
+<table border="1"> 
+<tr>
+<th>Film</th>
+<th>Datum izlaska</th>
+<th>Režiser</th>
+<th>Scenarist</th>
+</tr>
+
+<tr>
+<td>Harry Potter i Kamen mudraca</td>
+<td>16. studenog 2001.</td>
+<td rowspan="2">Chris Columbus</td>
+<td rowspan="4">Steve Kloves</td>
+</tr>
+
+<tr>
+<td>Harry Potter i Odaja tajni</td>
+<td>15. studenog 2002.</td>
+</tr>
+
+<tr>
+<td>Harry Potter i zatočenik Azkabana</td>
+<td>31. svibnja 2004.</td>
+<td>Alfonso Cuaron</td>
+</tr>
+
+<tr>
+<td>Harry Potter i Plameni pehar</td>
+<td>18. studenog 2005.</td>
+<td>Mike Newell</td>
+</tr>
+
+<tr>
+    <th colspan="4">Filmovi koje je režirao David Yates</th>
+</tr>
+
+<tr>
+    <td>Harry Potter i Red feniksa</td>
+    <td>11. srpnja 2009.</td>
+    <td rowspan="4">David Yates</td>
+    <td>Michael Goldenberg</td>
+</tr>
+
+<tr>
+<td>Harry Potter i Princ miješane krvi</td>
+<td>15. srpnja 2009.</td>
+<td rowspan="3">Steve Kloves</td>
+</tr>
+
+<tr>
+<td>Harry Potter i Darovi smrti 1. dio</td>
+<td>19. studenog 2010.</td>
+</tr>
+
+<tr>
+<td>Harry Potter i Darovi smrti 2. dio</td>
+<td>15. srpnja 2011.</td>
+</tr>
+
+</table>
+
+<h2>Obrazac</h2>
+<form action="#" method="get">
+<label for="">Unesi ime:</label>
+<input type="text" id="ime" placeholder="Unesi ime...">
+
+<br>
+<br>
+
+<label for="prezime">Unesi prezime:</label>
+<input type="text" id="prezime">
+
+<br>
+<br>
+
+<label for="pass">Unesi lozinku:</label>
+<input type="password" name="pass" id="pass" required>
+
+<br>
+<br>
+
+<input type="radio" name="predmet" id="admin">
+<label for="admin">admin</label>
+<input type="radio" name="predmet" id="guest" >
+<label for="guest">guest</label>
+
+<br>
+
+<input type="checkbox" name="prihvaćanje uvjeta">
+<label for="prihvaćanje uvjeta">prihvaćanje uvjeta</label>
+<br>
+<br>
+<input type="submit" value="Pošalji">
+<input type="reset" value="Poništi">
+<hr>
+<h2>Audio zapis</h2>
+<audio controls src="../audio_video/test-audio.ogg"></audio>
+
+<h2>Video zapis</h2>
+<video width="400" height="350" controls>
+  <source src="../audio_video/puppy.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<hr>
+
+
+</body>
+</html>
