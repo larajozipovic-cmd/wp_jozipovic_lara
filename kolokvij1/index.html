@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="autor" content="Lara Jozipović, studentica 3. godine Učiteljskog studija">
+    <title>Moja Web stranica</title>
+</head>
+<body>
+    
+<h1>Dobrodošli na moju web stranicu</h1>
+<br>
+<p>Ovo je prvi paragraf na mojoj web stranici.</p>
+<p>Ovo je moj <em>drugi</em> <strong>paragraf.</strong></p>
+
+<h2>Najdraži filmovi:</h2>
+<ul>
+    <li>Vrijeme je novac</li>
+    <li>How to lose a guy in 10 days</li>
+    <li>Titanik</li>
+    <li>Avatar</li>
+</ul>
+
+<h2>Najdraže pjesme:</h2>
+
+<ol>
+    <li>Pelin i med</li>
+    <li>Cesarica</li>
+    <li>Igra bez granica</li>
+    <li>Soba za tugu</li>
+</ol>
+<h2>Najdraža mi je životinja pas.</h2>
+<img src="../audio_video/the-psychology-behind-dogs.webp" alt="slika psa" width="550px" height="300px">
+
+<p>Otvori link za posjet web stranici fakulteta <a href="../linkovi/kolokvij1.html" target="_blank">Web stranica</a> </p>
+<p>Otvori link kako biste posjetili web stranicu studentskog centra <a href="../linkovi/webstranica.html">web stranica studenog centra</a></p>
+<br>
+<table border="1">
+   
+<tr>
+    <th colspan="6"> Time Table</th>
+</tr>
+
+
+    <tr>
+        <th rowspan="6">Hours</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+    </tr>
+ <tr>
+        <th colspan="2">Maths</th>
+        <td>Science</td>
+        <td>Maths</td>
+        <td>Art</td>
+    </tr>
+<tr>
+    <td>Science</td>
+    <td>Maths</td>
+    <td>Science</td>
+    <td>Maths</td>
+    <td>Arts</td>
+</tr>
+
+<tr>
+<th colspan="5">Lunch</th>
+</tr>
+
+<tr>
+    <td>Science</td>
+    <td>Maths</td>
+    <th colspan="2">Science</th>
+    <th rowspan="2">Project</th>
+</tr>
+
+<tr>
+    <td>Science</td>
+    <td>Maths</td>
+    <td>Science</td>
+    <td>Maths</td>
+</tr>
+
+</table>
+<h3>Forme u HTML-u</h3>
+<br>
+<form action="#" method="get">
+<label for="">Unesi ime:</label>
+<input type="text" id="ime" placeholder="Unesi ime...">
+<br>
+
+<label for="pass">Unesi lozinku:</label>
+<input type="password" name="pass" id="pass" required>
+<br>
+
+<label for="email">Unesi email:</label>
+<input type="email" name="email" id="email">
+<br>
+
+<input type="radio" name="predmet" id="Admin">
+<label for="Admin">Admin</label>
+<input type="radio" name="predmet" id="Guest">
+<label for="Guest">Guest</label>
+<input type="radio" name="predmet" id="Other">
+<label for="Other">Other</label>
+<br>
+
+<input type="submit" value="Pošalji">
+<input type="reset" value="Poništi">
+
+<h2>Audio zapis</h2>
+<audio controls src="./test-audio.ogg"></audio>
+
+<h2>Video zapis</h2>
+<video width="400" height="350" controls>
+  <source src="./puppy.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+</body>
+</html>
