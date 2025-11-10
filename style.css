@@ -7,4 +7,16 @@ h2 {
 body {background-color: rgb(198, 118, 74);
 
 }
+
+/* pristup preko ID-a */
+
+#prvi {
+    color: rgb(135, 231, 156);
+}
+
+/* pristup preko klase */
+.drugi {
+    color: rgb(154, 63, 239);
+}
+
 </style>
