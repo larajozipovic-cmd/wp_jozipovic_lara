@@ -1,0 +1,64 @@
+/* Zadani fontovi (Google Fonts) */
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+h2 {
+    color: #4CAF50;
+}
+
+#main-title {
+    font-size: 4rem;
+}
+
+.p1 {
+    font-size: 16px;
+    color: #37474F;
+}
+
+.p2 {
+    font-size: 18px;
+    color: #546E7A;
+}
+
+.p3 {
+    font-size: 20px;
+    color: #78909C;
+}
+
+.highlight {
+    color: #FFC107;
+}
+
+body {
+    background-color: #ECEFF1;
+}
+
+ul li:nth-child(1) {
+    list-style-type: square;
+}
+
+ul li:nth-child(2) {
+    list-style-type: circle;
+}
+
+ul li:nth-child(3) {
+    list-style-type: disc;
+}
+
+ul li:nth-child(4) {
+    list-style-type: "@ ";
+}
+
+ul li:nth-child(5) {
+    list-style-type: "* ";
+}
