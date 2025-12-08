@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avantura kroz Šumu Svjetlosti</title>
+<style>
+html, body { margin:0; padding:0; overflow:hidden; font-family:sans-serif; background:#000; }
+canvas { display:block; }
+#message {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  font-size:28px; font-weight:bold; color:white;
+  text-shadow:0 0 10px #ffcc00;
+  display:none;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="message">🎉 Dobio si fragment! ✔</div>
+<script>
+// --- Setup ---
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// --- Player ---
+const PLAYER_W = 50, PLAYER_H = 50;
+let player = {x:100, y:canvas.height-150, vx:0, vy:0, onGround:false};
+
+// --- Controls ---
+const keys = {};
+document.addEventListener('keydown', e=>keys[e.key]='down');
+document.addEventListener('keyup', e=>delete keys[e.key]);
+
+// --- Gravity & Jump ---
+const GRAVITY = 0.8;
+
+// --- Platforms ---
+const platforms = [
+    {x:0, y:canvas.height-50, width:canvas.width, height:50},
+    {x:300, y:canvas.height-150, width:150, height:20},
+    {x:600, y:canvas.height-250, width:200, height:20},
+    {x:950, y:canvas.height-180, width:150, height:20},
+    {x:1200, y:canvas.height-300, width:200, height:20},
+];
+
+// --- Coins ---
+const coins = [
+    {x:350,y:canvas.height-180,collected:false},
+    {x:650,y:canvas.height-280,collected:false},
+    {x:1000,y:canvas.height-210,collected:false},
+    {x:1250,y:canvas.height-330,collected:false}
+];
+
+// --- Enemies ---
+let enemies = [
+    {x:500,y:canvas.height-100,width:50,height:50,vx:2},
+    {x:900,y:canvas.height-200,width:50,height:50,vx:-1.5}
+];
+
+// --- Particles ---
+let particles = [];
+
+// --- Background Image ---
+const bg = new Image();
+bg.src = 'forest_bg.png'; // slika šume u folderu igra3
+
+// --- Player Sprite ---
+const playerSprite = new Image();
+playerSprite.src = 'player.png'; // tvoj dječak
+
+// --- Particle Functions ---
+function addParticles(x,y,color){
+    for(let i=0;i<5;i++){
+        particles.push({x,y,vx:Math.random()*2-1,vy:Math.random()*-2-1,alpha:1,color});
+    }
+}
+function updateParticles(){
+    particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.alpha-=0.02; });
+    particles = particles.filter(p=>p.alpha>0);
+}
+function drawParticles(){
+    particles.forEach(p=>{
+        ctx.fillStyle=`rgba(${p.color},${p.alpha})`;
+        ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fill();
+    });
+}
+
+// --- Game Update ---
+function update(){
+    player.vx=0;
+    if(keys['ArrowLeft']) player.vx=-5;
+    if(keys['ArrowRight']) player.vx=5;
+    if((keys['ArrowUp']||keys[' ']) && player.onGround){
+        player.vy=-15; player.onGround=false;
+        addParticles(player.x+PLAYER_W/2,player.y+PLAYER_H,'255,255,200');
+    }
+
+    player.vy+=GRAVITY;
+    player.x+=player.vx;
+    player.y+=player.vy;
+
+    // Collision with platforms
+    player.onGround=false;
+    platforms.forEach(p=>{
+        if(player.x< p.x+p.width && player.x+PLAYER_W>p.x &&
+           player.y< p.y+p.height && player.y+PLAYER_H>p.y){
+            if(player.vy>0 && player.y+PLAYER_H-player.vy <= p.y){
+                player.y=p.y-PLAYER_H; player.vy=0; player.onGround=true;
+            }
+        }
+    });
+
+    if(player.x<0) player.x=0;
+    if(player.x+PLAYER_W>canvas.width) player.x=canvas.width-PLAYER_W;
+    if(player.y+PLAYER_H>canvas.height){ player.y=canvas.height-PLAYER_H; player.vy=0; player.onGround=true; }
+
+    // Coins
+    coins.forEach(c=>{
+        if(!c.collected && player.x+PLAYER_W/2>c.x-10 && player.x+PLAYER_W/2<c.x+10 &&
+           player.y+PLAYER_H/2>c.y-10 && player.y+PLAYER_H/2<c.y+10){
+            c.collected=true;
+            addParticles(c.x,c.y,'255,255,255');
+        }
+    });
+
+    // Enemies AI simple
+    enemies.forEach(e=>{
+        e.x+=e.vx;
+        if(e.x<0 || e.x+e.width>canvas.width) e.vx*=-1;
+        if(player.x<e.x+e.width && player.x+PLAYER_W>e.x && player.y<e.y+e.height && player.y+PLAYER_H>e.y){
+            resetGame();
+        }
+    });
+
+    updateParticles();
+}
+
+// --- Game Draw ---
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Background
+    if(bg.complete) ctx.drawImage(bg,0,0,canvas.width,canvas.height);
+
+    // Darkness mask
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    // Light around player
+    const gradient = ctx.createRadialGradient(player.x+PLAYER_W/2,player.y+PLAYER_H/2,0,player.x+PLAYER_W/2,player.y+PLAYER_H/2,150);
+    gradient.addColorStop(0,'rgba(255,255,200,0.9)');
+    gradient.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=gradient;
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalCompositeOperation='source-over';
+
+    // Platforms
+    ctx.fillStyle='rgba(50,100,50,0.6)';
+    platforms.forEach(p=>ctx.fillRect(p.x,p.y,p.width,p.height));
+
+    // Coins
+    coins.forEach(c=>{
+        if(!c.collected){
+            ctx.fillStyle='gold';
+            ctx.beginPath(); ctx.arc(c.x,c.y,8,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle='#FFD700'; ctx.stroke();
+        }
+    });
+
+    // Enemies
+    enemies.forEach(e=>{
+        ctx.fillStyle='rgba(255,0,0,0.8)';
+        ctx.fillRect(e.x,e.y,e.width,e.height);
+    });
+
+    // Particles
+    drawParticles();
+
+    // Player
+    if(playerSprite.complete) ctx.drawImage(playerSprite,player.x,player.y,PLAYER_W,PLAYER_H);
+}
+
+// --- Reset ---
+function resetGame(){
+    player.x=100; player.y=canvas.height-150; player.vx=0; player.vy=0; player.onGround=false;
+    coins.forEach(c=>c.collected=false);
+    document.getElementById('message').style.display='none';
+}
+
+// --- Fragment Check ---
+function checkFragment(){
+    if(coins.every(c=>c.collected) && player.x>platforms[platforms.length-1].x){
+        localStorage.setItem('fragment3','✔');
+        document.getElementById('message').style.display='block';
+    }
+}
+
+// --- Game Loop ---
+function loop(){ update(); draw(); checkFragment(); requestAnimationFrame(loop); }
+loop();
+
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>

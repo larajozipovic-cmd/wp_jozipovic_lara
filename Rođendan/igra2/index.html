@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goku Platformer: WOW Drvo</title>
+<style>
+html, body { margin:0; padding:0; overflow:hidden; font-family:sans-serif; }
+canvas { display:block; }
+#message {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  font-size:28px; font-weight:bold; color:white;
+  text-shadow:0 0 10px #ffcc00;
+  display:none;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="message">🎉 Dobio si fragment! ✔</div>
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const PLAYER_WIDTH = 50;
+const PLAYER_HEIGHT = 50;
+let player = {x:350, y:canvas.height-150, vx:0, vy:0, onGround:false};
+let keys = {};
+
+const gokuSprite = new Image(); gokuSprite.src = 'goku.png';
+const enemySprite = new Image(); enemySprite.src = 'enemy.png';
+
+// === TREE ===
+const tree = {x:350, y:canvas.height-350, width:120, height:350};
+const branches = [
+    {x:320, y:canvas.height-300, width:180, height:20},
+    {x:300, y:canvas.height-250, width:220, height:20},
+    {x:340, y:canvas.height-200, width:160, height:20},
+    {x:310, y:canvas.height-150, width:200, height:20},
+    {x:330, y:canvas.height-100, width:180, height:20} // vrh drveta
+];
+
+// === COINS ===
+const coins = [
+    {x:340,y:canvas.height-290,collected:false},
+    {x:320,y:canvas.height-240,collected:false},
+    {x:350,y:canvas.height-190,collected:false},
+    {x:330,y:canvas.height-140,collected:false}
+];
+
+// === ENEMY ===
+let enemy = {x:500, y:canvas.height-100, width:50, height:50, vx:-2};
+
+// === PARTICLES ===
+let particles = [];
+
+// === BIRDS ===
+const birds = [];
+for(let i=0;i<5;i++){
+    birds.push({x:Math.random()*canvas.width, y:50+Math.random()*50, vx:1+Math.random()*1});
+}
+
+// === CONTROLS ===
+document.addEventListener('keydown', e=>keys[e.key]='down');
+document.addEventListener('keyup', e=>delete keys[e.key]);
+
+const GRAVITY = 0.8;
+
+function addJumpParticles(){
+    for(let i=0;i<5;i++){
+        particles.push({x: player.x+PLAYER_WIDTH/2, y: player.y+PLAYER_HEIGHT, vx:Math.random()*2-1, vy:Math.random()*-2-1, alpha:1});
+    }
+}
+function updateParticles(){
+    particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.alpha-=0.02; });
+    particles = particles.filter(p=>p.alpha>0);
+}
+function drawParticles(){
+    particles.forEach(p=>{ ctx.fillStyle=`rgba(255,255,0,${p.alpha})`; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); });
+}
+
+function drawBirds(){
+    ctx.fillStyle='white';
+    birds.forEach(b=>{
+        ctx.beginPath(); ctx.moveTo(b.x,b.y); ctx.lineTo(b.x-5,b.y+5); ctx.lineTo(b.x+5,b.y+5); ctx.closePath(); ctx.fill();
+        b.x+=b.vx; if(b.x>canvas.width) b.x=-10;
+    });
+}
+
+function drawBackground(){
+    const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+    grad.addColorStop(0,'#FF9C5E');
+    grad.addColorStop(0.5,'#FF6B6B');
+    grad.addColorStop(1,'#2B2D42');
+    ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+    drawBirds();
+}
+
+// === DRAW TREE SA TEKSTURAMA ===
+function drawTree(){
+    // deblo sa teksturom
+    ctx.fillStyle='#8B4513';
+    ctx.fillRect(tree.x, tree.y, tree.width, tree.height);
+    ctx.strokeStyle='#5A2D0C';
+    ctx.lineWidth=3;
+    for(let i=0;i<tree.height;i+=15){ ctx.beginPath(); ctx.moveTo(tree.x, tree.y+i); ctx.lineTo(tree.x+tree.width, tree.y+i); ctx.stroke(); }
+
+    // grane sa lišćem
+    branches.forEach(b=>{
+        ctx.fillStyle='#4B8B3B'; ctx.fillRect(b.x,b.y,b.width,b.height);
+        // lišće
+        ctx.fillStyle='green';
+        ctx.beginPath(); ctx.ellipse(b.x+b.width/2, b.y-10, b.width/2, 20, 0, 0, Math.PI*2); ctx.fill();
+    });
+}
+
+function drawCoins(){ coins.forEach(c=>{ if(!c.collected){ ctx.fillStyle='gold'; ctx.beginPath(); ctx.arc(c.x,c.y,10,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#FFD700'; ctx.stroke(); } }); }
+
+function resetGame(){
+    player.x = 350; player.y=canvas.height-150; player.vx=0; player.vy=0; player.onGround=false;
+    coins.forEach(c=>c.collected=false);
+    document.getElementById('message').style.display='none';
+}
+
+let gokuFrame=0;
+function update(){
+    player.vx=0;
+    if(keys['ArrowLeft']) player.vx=-5;
+    if(keys['ArrowRight']) player.vx=5;
+
+    if((keys['ArrowUp']||keys[' ']) && player.onGround){ player.vy=-15; player.onGround=false; addJumpParticles(); }
+
+    player.vy+=GRAVITY; player.x+=player.vx; player.y+=player.vy;
+
+    player.onGround=false;
+    branches.forEach(b=>{
+        if(player.x < b.x+b.width && player.x+PLAYER_WIDTH> b.x &&
+           player.y < b.y+b.height && player.y+PLAYER_HEIGHT> b.y){
+            if(player.vy>0 && player.y+PLAYER_HEIGHT-player.vy <= b.y){ player.y=b.y-PLAYER_HEIGHT; player.vy=0; player.onGround=true; }
+        }
+    });
+
+    if(player.x<0) player.x=0;
+    if(player.x+PLAYER_WIDTH>canvas.width) player.x=canvas.width-PLAYER_WIDTH;
+    if(player.y+PLAYER_HEIGHT>canvas.height){ player.y=canvas.height-PLAYER_HEIGHT; player.vy=0; player.onGround=true; }
+
+    enemy.x+=enemy.vx;
+    if(enemy.x<0 || enemy.x+enemy.width>canvas.width) enemy.vx*=-1;
+    if(player.x<enemy.x+enemy.width && player.x+PLAYER_WIDTH>enemy.x && player.y<enemy.y+enemy.height && player.y+PLAYER_HEIGHT>enemy.y){ resetGame(); }
+
+    coins.forEach(c=>{ if(!c.collected && player.x < c.x+10 && player.x+PLAYER_WIDTH>c.x-10 && player.y < c.y+10 && player.y+PLAYER_HEIGHT>c.y-10){ c.collected=true; } });
+
+    // fragment na vrhu drveta
+    const topBranch = branches[branches.length-1];
+    if(player.x + PLAYER_WIDTH/2 > topBranch.x && player.x + PLAYER_WIDTH/2 < topBranch.x + topBranch.width && player.y + PLAYER_HEIGHT/2 < topBranch.y + topBranch.height){
+        localStorage.setItem('fragment2','✔');
+        document.getElementById('message').style.display='block';
+    }
+
+    if(!player.onGround) gokuFrame=1;
+    else if(keys['ArrowLeft']||keys['ArrowRight']){ gokuFrame+=0.2; if(gokuFrame>0.8) gokuFrame=0; }
+    else gokuFrame=0;
+
+    updateParticles();
+}
+
+function draw(){
+    drawBackground();
+    drawTree();
+    drawCoins();
+    ctx.drawImage(enemySprite, enemy.x, enemy.y, enemy.width, enemy.height);
+    drawParticles();
+
+    let offsetY = !player.onGround?-5:(keys['ArrowLeft']||keys['ArrowRight']?-(gokuFrame*2):0);
+    ctx.drawImage(gokuSprite, player.x, player.y+offsetY, PLAYER_WIDTH, PLAYER_HEIGHT);
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+loop();
+
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>
