@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dobrodošao, Ivane — Misija ljubavi</title>
+  <title>Dobrodošao, Ivane</title>
   <style>
     :root{--bg:#0f1226;--accent:#f59e0b;--glass:rgba(255,255,255,0.06)}
 
@@ -75,8 +75,8 @@
 </head>
 <body>
   <div class="card">
-    <h1>Dobrodošao, Ivane.</h1>
-    <p class="lead">Pred tobom je put ratnika ljubavi — riješi 4 izazova i otkrij tajnu poruku.</p>
+    <h1>Dobrodošao u mali izazov</h1>
+    <p class="lead">Pred tobom je put pun prepreka i misterije — riješi 4 izazova i otkrij tajnu poruku.</p>
 
     <div class="balls" aria-hidden="false">
       <div class="ball" data-game="igra1" title="Igra 1: Bijeg kroz snijeg"><div class="star">1</div></div>
@@ -124,7 +124,7 @@
       const v = pwInput.value.trim();
       if(v === CORRECT){
         overlay.style.display = 'none';
-        localStorage.setItem('unlocked','1');
+        sessionStorage.setItem('unlocked','1');
       } else {
         pwMsg.textContent = 'Pogrešna šifra — pokušaj ponovno.';
         pwInput.value = '';
@@ -132,11 +132,11 @@
       }
     }
 
-    if(localStorage.getItem('unlocked') === '1') overlay.style.display = 'none';
+    if(sessionStorage.getItem('unlocked') === '1') overlay.style.display = 'none';
 
     document.querySelectorAll('.ball').forEach((el, idx)=>{
       el.addEventListener('click', ()=>{
-        if(localStorage.getItem('unlocked') !== '1'){
+        if(sessionStorage.getItem('unlocked') !== '1'){
           alert('Prvo unesi šifru.');
           return;
         }
