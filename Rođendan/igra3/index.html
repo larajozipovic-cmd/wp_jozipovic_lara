@@ -1,265 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="hr">
 <head>
-<meta charset="UTF-8">
-<title>IGRA 3 – Avantura kroz Šumu Svjetlosti</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Igra 3 – Memory</title>
+
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        background: #000;
-    }
-    canvas {
-        display: block;
-        margin: 0 auto;
-        background: #000;
-    }
+:root{--accent:#f59e0b}
+
+body{
+  margin:0;
+  height:100vh;
+  background:#0f1226;
+  color:#fff;
+  font-family:Inter,system-ui,Arial;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  background:rgba(0,0,0,.35);
+  padding:26px;
+  border-radius:18px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+  text-align:center;
+}
+
+h2{margin-top:0}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,70px);
+  gap:12px;
+  margin-top:16px;
+  justify-content:center;
+}
+
+.tile{
+  width:70px;
+  height:70px;
+  border-radius:12px;
+  background:radial-gradient(circle at 30% 30%, #ffd27a, #f08f00);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  cursor:pointer;
+  user-select:none;
+}
+
+.tile.revealed{
+  background:#111827;
+}
+
+.tile.done{
+  background:#16a34a;
+  cursor:default;
+}
 </style>
 </head>
-<body>
 
-<canvas id="game"></canvas>
+<body>
+<div class="card">
+  <h2>Igra 3: Memory</h2>
+  <p>Pronađi sve parove.</p>
+
+  <div class="grid" id="grid"></div>
+</div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const symbols = ['🔥','⚡','💛','⭐','🔥','⚡','💛','⭐'];
+symbols.sort(()=>Math.random()-0.5);
 
-canvas.width = 1280;
-canvas.height = 720;
+const grid = document.getElementById('grid');
+let first = null;
+let lock = false;
+let solved = 0;
 
-/* ——————————————
-      IMAGES
-—————————————— */
-const bg = new Image();
-bg.src = "forest-bg.png";
+symbols.forEach(sym=>{
+  const tile = document.createElement('div');
+  tile.className = 'tile';
 
-const boyImg = new Image();
-boyImg.src = "player_boy.png";
+  tile.addEventListener('click', ()=>{
+    if(lock || tile.classList.contains('done') || tile === first) return;
 
-const girlImg = new Image();
-girlImg.src = "player_girl.png";
+    tile.textContent = sym;
+    tile.classList.add('revealed');
 
-const portalImg = new Image();
-portalImg.src = "portal.png"; // ako želiš, možeš kasnije dodati png portala
+    if(!first){
+      first = tile;
+    }else{
+      lock = true;
+      if(first.textContent === tile.textContent){
+        first.classList.add('done');
+        tile.classList.add('done');
+        solved += 2;
+        resetTurn();
 
-/* ——————————————
-      PLAYER SETUP
-—————————————— */
-class Player {
-    constructor(img, x, y, auraColor) {
-        this.img = img;
-        this.x = x;
-        this.y = y;
-        this.w = 85;
-        this.h = 120;
-        this.vx = 0;
-        this.vy = 0;
-        this.speed = 4;
-        this.jumpForce = -13;
-        this.onGround = false;
-        this.auraColor = auraColor;
-    }
-
-    draw() {
-        // aura
-        const g = ctx.createRadialGradient(
-            this.x + this.w/2, this.y + this.h/2, 10,
-            this.x + this.w/2, this.y + this.h/2, 70
-        );
-        g.addColorStop(0, this.auraColor);
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = g;
-        ctx.fillRect(this.x - 40, this.y - 40, 200, 200);
-
-        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
-    }
-
-    move() {
-        this.vy += 0.6; // gravity
-        this.y += this.vy;
-        this.x += this.vx;
-
-        // ground
-        if (this.y + this.h > canvas.height - 60) {
-            this.y = canvas.height - 60 - this.h;
-            this.vy = 0;
-            this.onGround = true;
+        if(solved === symbols.length){
+          setTimeout(()=>{
+            localStorage.setItem('fragment3','✔');
+            alert('Bravo, osvojio si fragment!');
+            window.close();
+          },500);
         }
+      }else{
+        setTimeout(()=>{
+          first.textContent = '';
+          tile.textContent = '';
+          first.classList.remove('revealed');
+          tile.classList.remove('revealed');
+          resetTurn();
+        },800);
+      }
     }
+  });
+
+  grid.appendChild(tile);
+});
+
+function resetTurn(){
+  first = null;
+  lock = false;
 }
-
-/* ——————————————
-      OBJECTS
-—————————————— */
-let boy = new Player(boyImg, 200, 200, "rgba(255,220,120,0.5)");
-let girl = new Player(girlImg, 300, 200, "rgba(160,120,255,0.5)");
-
-let keys = {};
-
-document.addEventListener("keydown", e => keys[e.code] = true);
-document.addEventListener("keyup", e => keys[e.code] = false);
-
-/* ——————————————
-      LIGHT ORBS
-—————————————— */
-let orbs = [];
-const ORB_TOTAL = 6;
-
-function spawnOrbs() {
-    for (let i = 0; i < ORB_TOTAL; i++) {
-        orbs.push({
-            x: 200 + i * 150,
-            y: 400 - Math.random() * 200,
-            r: 14,
-            glow: 0
-        });
-    }
-}
-spawnOrbs();
-
-/* ——————————————
-      PORTAL + MAGIC PLATE
-—————————————— */
-let portal = {
-    x: 1100,
-    y: 500,
-    w: 120,
-    h: 150,
-    active: false,
-    spin: 0
-};
-
-let magicPlate = {
-    x: 600,
-    y: canvas.height - 80,
-    w: 150,
-    h: 20,
-    boyOn: false,
-    girlOn: false
-};
-
-/* ——————————————
-      FOREST MIST
-—————————————— */
-let mistAlpha = 0.65;
-
-/* ——————————————
-      UPDATE LOOP
-—————————————— */
-function update() {
-
-    /* PLAYER MOVEMENT */
-
-    // Boy controls: WASD
-    boy.vx = 0;
-    if (keys["KeyA"]) boy.vx = -boy.speed;
-    if (keys["KeyD"]) boy.vx = boy.speed;
-    if (keys["KeyW"] && boy.onGround) {
-        boy.vy = boy.jumpForce;
-        boy.onGround = false;
-    }
-
-    // Girl controls: Arrow keys
-    girl.vx = 0;
-    if (keys["ArrowLeft"]) girl.vx = -girl.speed;
-    if (keys["ArrowRight"]) girl.vx = girl.speed;
-    if (keys["ArrowUp"] && girl.onGround) {
-        girl.vy = girl.jumpForce;
-        girl.onGround = false;
-    }
-
-    boy.move();
-    girl.move();
-
-    /* ORB COLLECTION */
-    orbs = orbs.filter(orb => {
-        let bdx = orb.x - (boy.x + boy.w/2);
-        let bdy = orb.y - (boy.y + boy.h/2);
-        let gdx = orb.x - (girl.x + girl.w/2);
-        let gdy = orb.y - (girl.y + girl.h/2);
-
-        let bDist = Math.sqrt(bdx*bdx + bdy*bdy);
-        let gDist = Math.sqrt(gdx*gdx + gdy*gdy);
-
-        if (bDist < 40 || gDist < 40) {
-            mistAlpha -= 0.09;
-            if (mistAlpha < 0) mistAlpha = 0;
-            return false;
-        }
-        return true;
-    });
-
-    /* PORTAL ACTIVATION */
-    if (orbs.length === 0) {
-        portal.active = true;
-        portal.spin += 0.03;
-    }
-
-    /* MAGIC PLATE */
-    magicPlate.boyOn =
-        boy.x + boy.w > magicPlate.x &&
-        boy.x < magicPlate.x + magicPlate.w &&
-        boy.y + boy.h > magicPlate.y;
-
-    magicPlate.girlOn =
-        girl.x + girl.w > magicPlate.x &&
-        girl.x < magicPlate.x + magicPlate.w &&
-        girl.y + girl.h > magicPlate.y;
-
-    requestAnimationFrame(draw);
-}
-
-/* ——————————————
-      DRAW LOOP
-—————————————— */
-function draw() {
-    // Background
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-
-    /* ORBS */
-    orbs.forEach(o => {
-        o.glow += 0.05;
-        let pulse = Math.sin(o.glow) * 4;
-
-        let g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, 40);
-        g.addColorStop(0, "rgba(255,255,200,0.9)");
-        g.addColorStop(1, "rgba(255,255,200,0)");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(o.x, o.y, o.r + pulse, 0, Math.PI * 2);
-        ctx.fill();
-    });
-
-    /* MAGIC PLATE */
-    ctx.fillStyle = (magicPlate.boyOn && magicPlate.girlOn)
-        ? "rgba(200,255,200,0.8)"
-        : "rgba(150,150,255,0.4)";
-    ctx.fillRect(magicPlate.x, magicPlate.y, magicPlate.w, magicPlate.h);
-
-    /* PLAYERS */
-    boy.draw();
-    girl.draw();
-
-    /* PORTAL */
-    if (portal.active) {
-        ctx.save();
-        ctx.translate(portal.x + portal.w/2, portal.y + portal.h/2);
-        ctx.rotate(portal.spin);
-        ctx.fillStyle = "rgba(255,200,0,0.4)";
-        ctx.beginPath();
-        ctx.arc(0, 0, 50, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
-
-    /* FOREST MIST */
-    ctx.fillStyle = `rgba(0,0,0,${mistAlpha})`;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    update();
-}
-
-draw();
 </script>
 </body>
 </html>

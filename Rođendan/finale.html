@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finale</title>
+
+<style>
+  body {
+  margin: 0;
+  height: 100vh;
+  /* Tamnija pozadina preko slike */
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+    url('nasa-slika.jpg') no-repeat center center;
+  background-size: cover;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.overlay{
+  background: rgba(0,0,0,0.6);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.fragments{
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.frag{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  opacity: 0;
+  transform: scale(0);
+  animation: pop 0.6s forwards;
+}
+
+.frag:nth-child(1){animation-delay: 0.2s;}
+.frag:nth-child(2){animation-delay: 0.5s;}
+.frag:nth-child(3){animation-delay: 0.8s;}
+.frag:nth-child(4){animation-delay: 1.1s;}
+
+@keyframes pop{
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.message{
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  opacity: 0;
+  transform: scale(0);
+  animation: fadeIn 0.8s forwards;
+  animation-delay: 1.6s;
+}
+
+@keyframes fadeIn{
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+  <div class="fragments">
+    <div class="frag">✔</div>
+    <div class="frag">✔</div>
+    <div class="frag">✔</div>
+    <div class="frag">✔</div>
+  </div>
+  <div class="message">VOLIM TE</div>
+</div>
+
+<script>
+// provjera da li su sve igre riješene
+if(
+  !localStorage.getItem('fragment1') ||
+  !localStorage.getItem('fragment2') ||
+  !localStorage.getItem('fragment3') ||
+  !localStorage.getItem('fragment4')
+){
+  alert('Finale još nije otključano.');
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
