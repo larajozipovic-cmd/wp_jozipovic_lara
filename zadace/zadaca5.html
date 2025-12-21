@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepti - ljubav putuje kroz želudac</title>
+
+    <style>
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif, sans-serif;
+            background-color: #cce7ff; 
+            color: #000000;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 20px;
+            background-color: #a2d2ff;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #034078;
+        }
+
+        .recept {
+            border: 1px solid #000000;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .recept:hover {
+            transform: scale(1.02);
+        }
+
+        .recept img {
+            width: 200px;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .grid div {
+            border: 1px solid #000000;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .grid div:hover {
+            background-color: #a2d2ff;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Recepti - ljubav putuje kroz želudac</h1>
+    <p>Ako želiš iznenaditi svoje najmilije donosim ti 3 jednostavna recepta kojima možeš uliti brižnost i ljubav u njihova srca, posebice za vrijeme blagdanskih dana! Recepti su jako jednostavni i svatko ih može napraviti uz malo smješka i truda!</p>
+</header>
+
+<main>
+
+   
+    <section>
+        <div class="grid">
+            <div onclick="scrollToRecipe('paprika')">Punjena paprika sa sirom</div>
+            <div onclick="scrollToRecipe('spageti')">Špageti</div>
+            <div onclick="scrollToRecipe('desert')">Desert</div>
+        </div>
+    </section>
+
+    <section id="paprika">
+        <h2>Punjena paprika sa sirom</h2>
+        <div class="recept">
+            <img src="../paprike.webp" alt="Jelo">
+            <p>Potrebni sastojci</p>
+            <ul>
+                <li>500 g Belje Kravica kraljica Svježeg sira s vrhnjem</li>
+                <li>100g gorgonzole</li>
+                <li>4 crvene paprike</li>
+                <li>1 jaje</li>
+                <li>1 žlica vegete</li>
+                <li>2 žlice maslinovog ulja</li>
+                <li>sol</li>
+            </ul>
+            <p>Upute za pripremu:</p>
+            <ol>
+                <li>Cijele paprike prokuhajte oko 5 minuta u blago posoljenoj vodi te odmah ohladite hladnom vodom. Prerežite ih po duljini, očistite od sjemenki i žilica.</li>
+                <li>Električnom miješalicom dobro izmiješajte svježi kravlji sir s jajetom, gorgonzolom narezanom na sitne kockice i Vegetom.</li>
+                <li>Rasporedite sir u polovice paprika i stavite u nauljenu vatrostalnu posudu.</li>
+                <li>Pecite u pećnici zagrijanoj na 200°C oko 20 minuta.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="spageti">
+        <h2>Špageti</h2>
+        <div class="recept">
+            <img src="../spageti.webp" alt="Jelo">
+            <p>Potrebni sastojci</p>
+            <ul>
+                <li>350 g Zlato polje Bucatini</li>
+                <li>500 g svježih rajčica</li>
+                <li>150 g mozzarelle</li>
+                <li>50 ml maslinovog ulja</li>
+                <li>2 žlice vegete</li>
+            </ul>
+            <p>Upute za pripremu:</p>
+            <ol>
+                <li>Rajčice ogulite, očistite od sjemenki, narežite na kockice i kratko propirjajte na ugrijanom ulju. Dodajte Vegetu Twist mediterana i sve još kratko propirjajte.</li>
+                <li>Špagete skuhajte i istresite u toplu zdjelu. Toplim špagetima dodajte mozzarellu narezanu na kockice, prelijte ih umakom od rajčica, sve dobro promiješajte i odmah poslužite.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="desert">
+        <h2>Desert</h2>
+        <div class="recept">
+            <img src="../bazlamaca.jpg" alt="Desert">
+            <p>Potrebni sastojci</p>
+            <ul>
+                <li>1 litra mlijeka</li>
+                <li>4 jaja</li>
+                <li>120 g šećera</li>
+                <li>limunova korica</li>
+                <li>sol</li>
+                <li>300 g kukuruznog brašna</li>
+                <li>5 žlica ulja</li>
+            </ul>
+            <p>Za premazivanje:</p>
+            <ul>
+                <li>200 ml kiselog vrhnja</li>
+                <li>150 g Džema miješanog voća</li>
+            </ul>
+            <p>Upute za pripremu:</p>
+            <ol>
+                <li>U mlijeku razmutite jaja, ulje, šećer, naribanu limunovu koricu, malo soli i kukuruzno brašno.</li>
+                <li>Izlijte pripremljenu smjesu u lim koji ste prethodno premazali uljem i dobro ga zagrijali u pećnici. Pecite u zagrijanoj pećnici na 200°C oko 30 minuta.</li>
+                <li>Pečenu bazlamaču zalijte vrhnjem i zapecite još 20 minuta.</li>
+            </ol>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    function scrollToRecipe(id) {
+        const section = document.getElementById(id);
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+</script>
+
+</body>
+</html>
