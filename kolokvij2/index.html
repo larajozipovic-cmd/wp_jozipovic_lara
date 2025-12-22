@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolokvij 2</title>
+    <style>
+        
+        .belgium-flag {
+            width: 500px;
+            height: 300px;
+            display: flex;
+        }
+        .belgium-flag div {
+            flex: 1;
+        }
+        .black {
+             background-color: black;
+             }
+        .yellow { 
+            background-color: yellow; 
+        }
+        .red { 
+            background-color: red;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            margin-top: 20px;
+        }
+        .grid-item {
+            background-color: #84fb98;
+            border: 1px solid #000000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .box-model div {
+            border: 1px solid black;
+            padding: 15px;
+            margin: 10px;
+            background-color: palevioletred
+        }
+
+        .class1 { 
+            color: rgb(225, 255, 0); 
+            font-weight: bold; 
+            margin: 10px; 
+            padding: 5px; 
+        }
+        .class2 { 
+            color: green; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 8px; 
+            padding: 8px; 
+        }
+        .class3 { 
+            color: purple; 
+            text-decoration: underline; 
+            margin: 12px; 
+            padding: 10px; }
+
+        #id1 { 
+            color: red; 
+            font-size: 18px; 
+            margin: 15px; 
+            padding: 10px; 
+            font-style: initial; 
+        }
+        #id2 { 
+            color: rgb(46, 255, 241); 
+            font-family: Arial, sans-serif; 
+            margin: 5px; 
+            padding: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Kolokviij 2</h1>
+
+  
+    <h2>Zastava Belgije</h2>
+    <div class="belgium-flag">
+        <div class="black"></div>
+        <div class="yellow"></div>
+        <div class="red"></div>
+    </div>
+
+    <h2> 16 stvari koje volim:</h2>
+    <div class="grid-container">
+        <div class="grid-item">volim sladoled</div>
+        <div class="grid-item">volim životinje</div>
+        <div class="grid-item">volim čitati knjige</div>
+        <div class="grid-item">volim gledati filmove</div>
+        <div class="grid-item">volim slušati jazz glazbu</div>
+        <div class="grid-item">volim ljeto</div>
+        <div class="grid-item">volim svoju obitelj</div>
+        <div class="grid-item">volim more</div>
+        <div class="grid-item">volim se družiti</div>
+        <div class="grid-item">volim ići u kino</div>
+        <div class="grid-item">volim piti sok</div>
+        <div class="grid-item">volim šetnje</div>
+        <div class="grid-item">volim plivati</div>
+        <div class="grid-item">volim promatrati zvijezde</div>
+        <div class="grid-item">volim putovati</div>
+        <div class="grid-item">volim kuhati</div>
+    </div>
+
+    <h2>Moji najdraži predmeti</h2>
+    <div class="box-model">
+        <div>Priroda i društvo</div>
+        <div>Glazbena kultura</div>
+        <div>Hrvatski jezik</div>
+        <div>Engleski jezik</div>
+    </div>
+
+    <h2>Klase i ID</h2>
+    <p class="class1">Najdraža boja: žuta</p>
+    <p class="class2">Najdra hrana: špageti</p>
+    <p class="class3">Najdraža životinja: pas</p>
+    <p id="id1">Paragraf s ID-om 1</p>
+    <p id="id2">Paragraf s ID-om 2</p>
+
+    
+    <script src="index.js"></script>
+</body>
+</html>
